@@ -8,10 +8,12 @@ def convert_box_type(boxes,input_box_type = 'Kitti'):
     :param input_box_type: (str), input box type
     :return: new boxes with box type [x,y,z,l,w,h,yaw]
     """
-
+    boxes = np.array(boxes)
+    if len(boxes) == 0:
+        return None
     assert  input_box_type in ["Kitti","OpenPCDet"], 'unsupported input box type!'
 
-    if input_box_type == "OpenPCdet":
+    if input_box_type == "OpenPCDet":
         return boxes
 
     if input_box_type == "Kitti": #(h,w,l,x,y,z,yaw) -> (x,y,z,l,w,h,yaw)
@@ -70,7 +72,7 @@ def get_mesh_boxes(boxes,colors="red",
                             size=caption_size,
                             alpha=1,c=this_c,
                             font="Calco",
-                            justify='cent')
+                            justify='left')
             vtk_box._caption.SetBorder(False)
             vtk_box._caption.SetLeader(False)
 
@@ -202,3 +204,164 @@ def get_line_boxes(boxes,
         return_list+=lines_actors
 
     return return_list
+
+def get_box_points(points, pose=None):
+    """
+    box to points
+    :param points: (7,),box
+    :param pose:
+    :return:
+    """
+    PI=np.pi
+    import math
+    point=np.zeros(shape=points.shape)
+    point[:]=points[:]
+
+    h,w,l = point[5],point[4],point[3]
+    x,y,z = point[0],point[1],point[2]
+
+
+    point_num=200
+    i=1
+    label=1
+    z_vector = np.arange(- h / 2, h / 2, h / point_num)[0:point_num]
+    w_vector = np.arange(- w / 2, w / 2, w / point_num)[0:point_num]
+    l_vector = np.arange(- l / 2, l / 2, l / point_num)[0:point_num]
+
+    d_z_p = -np.sort(-np.arange(0, h / 2, h / (point_num*2))[0:point_num])
+    d_z_n = np.arange( -h / 2,0, h / (point_num*2))[0:point_num]
+
+
+    d_w_p = -np.sort(-np.arange(0, w / 2, w / (point_num*2))[0:point_num])
+    d_w_n = np.arange(-w / 2,0,  w / (point_num*2))[0:point_num]
+
+    d_l_p = np.arange(l / 2, l*(3/3) , (l*(3/3)-l / 2) / (point_num*2))[0:point_num]
+
+
+    d1 = np.zeros(shape=(point_num, 4))
+    d1[:, 0] = d_w_p
+    d1[:, 1] = d_l_p
+    d1[:, 2] = d_z_p
+    d1[:, 3] = i
+
+    d2 = np.zeros(shape=(point_num, 4))
+    d2[:, 0] = d_w_n
+    d2[:, 1] = d_l_p
+    d2[:, 2] = d_z_p
+    d2[:, 3] = i
+
+    d3 = np.zeros(shape=(point_num, 4))
+    d3[:, 0] = d_w_p
+    d3[:, 1] = d_l_p
+    d3[:, 2] = d_z_n
+    d3[:, 3] = i
+
+    d4 = np.zeros(shape=(point_num, 4))
+    d4[:, 0] = d_w_n
+    d4[:, 1] = d_l_p
+    d4[:, 2] = d_z_n
+    d4[:, 3] = i
+
+    z1 = np.zeros(shape=(point_num, 4))
+    z1[:, 0] = -w / 2
+    z1[:, 1] = -l / 2
+    z1[:, 2] = z_vector
+    z1[:, 3] = i
+    z2 = np.zeros(shape=(point_num, 4))
+    z2[:, 0] = -w / 2
+    z2[:, 1] =l / 2
+    z2[:, 2] = z_vector
+    z2[:, 3] = i
+    z3 = np.zeros(shape=(point_num, 4))
+    z3[:, 0] = w / 2
+    z3[:, 1] = -l / 2
+    z3[:, 2] = z_vector
+    z3[:, 3] = i
+    z4 = np.zeros(shape=(point_num, 4))
+    z4[:, 0] = w / 2
+    z4[:, 1] = l / 2
+    z4[:, 2] = z_vector
+    z4[:, 3] = i
+    w1 = np.zeros(shape=(point_num, 4))
+    w1[:, 0]=w_vector
+    w1[:, 1]=-l / 2
+    w1[:, 2]=-h / 2
+    w1[:, 3] = i
+    w2 = np.zeros(shape=(point_num, 4))
+    w2[:, 0] = w_vector
+    w2[:, 1] = -l/ 2
+    w2[:, 2] = h / 2
+    w2[:, 3] = i
+    w3 = np.zeros(shape=(point_num, 4))
+    w3[:, 0] = w_vector
+    w3[:, 1] = l / 2
+    w3[:, 2] = -h / 2
+    w3[:, 3] = i
+    w4 = np.zeros(shape=(point_num, 4))
+    w4[:, 0] = w_vector
+    w4[:, 1] =l / 2
+    w4[:, 2] = h / 2
+    w4[:, 3] = i
+    l1 = np.zeros(shape=(point_num, 4))
+    l1[:, 0] = -w / 2
+    l1[:, 1] = l_vector
+    l1[:, 2] = -h / 2
+    l1[:, 3] = i
+    l2 = np.zeros(shape=(point_num, 4))
+    l2[:, 0] = -w / 2
+    l2[:, 1] = l_vector
+    l2[:, 2] = h / 2
+    l2[:, 3] = i
+    l3 = np.zeros(shape=(point_num, 4))
+    l3[:, 0] = w / 2
+    l3[:, 1] = l_vector
+    l3[:, 2] = -h / 2
+    l3[:, 3] = i
+    l4 = np.zeros(shape=(point_num, 4))
+    l4[:, 0] = w / 2
+    l4[:, 1] = l_vector
+    l4[:, 2] = h / 2
+    l4[:, 3] = i
+
+    point_mat=np.mat(np.concatenate((z1,z2,z3,z4,w1,w2,w3,w4,l1,l2,l3,l4,d1,d2,d3,d4)))#
+
+    angle=point[6]-PI/2
+
+    if pose is None:
+        convert_mat = np.mat([[math.cos(angle), -math.sin(angle), 0, x],
+                              [math.sin(angle), math.cos(angle), 0, y],
+                              [0, 0, 1, z],
+                              [0, 0, 0, label]])
+
+        transformed_mat = convert_mat * point_mat.T
+    else:
+
+        convert_mat = np.mat([[math.cos(angle), -math.sin(angle), 0, 0],
+                              [math.sin(angle), math.cos(angle), 0, 0],
+                              [0, 0, 1, 0],
+                              [0, 0, 0, 1]])
+        transformed_mat = convert_mat * point_mat.T
+        pose_mat = np.mat([[pose[0, 0], pose[0, 1], pose[0, 2], x],
+                           [pose[1, 0], pose[1, 1], pose[1, 2], y],
+                           [pose[2, 0], pose[2, 1], pose[2, 2], z],
+                           [0, 0, 0, label]])
+        transformed_mat = pose_mat * transformed_mat
+
+
+    transformed_mat = np.array(transformed_mat.T,dtype=np.float32)
+
+    return transformed_mat
+
+def velo_to_cam(cloud,vtc_mat):
+    """
+    description: convert Lidar 3D coordinates to 3D camera coordinates .
+    input: (PointsNum,3)
+    output: (PointsNum,3)
+    """
+    mat=np.ones(shape=(cloud.shape[0],4),dtype=np.float32)
+    mat[:,0:3]=cloud[:,0:3]
+    mat=np.mat(mat)
+    normal=np.mat(vtc_mat)
+    transformed_mat = normal * mat.T
+    T=np.array(transformed_mat.T,dtype=np.float32)
+    return T

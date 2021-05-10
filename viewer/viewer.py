@@ -3,13 +3,13 @@ from vedo import *
 import cv2
 import vtk
 from .color_map import generate_objects_color_map,generate_objects_colors,generate_scatter_colors
-from .box_op import convert_box_type,get_line_boxes,get_mesh_boxes
+from .box_op import convert_box_type,get_line_boxes,get_mesh_boxes,velo_to_cam,get_box_points
 
 class Viewer:
     """
     default box type: "OpenPCDet", (x,y,z,l,w,h,yaw)
     """
-    def __init__(self,box_type = "OpenPCdet"):
+    def __init__(self,box_type = "OpenPCDet"):
         self.objects_color_map = generate_objects_color_map('rainbow')
         self.box_type = box_type
         self.vi = Plotter(bg=(255, 255, 255))
@@ -19,7 +19,6 @@ class Viewer:
         self.actors = []
         self.actors_without_del = []
         self.tracks_actors_dict = {}
-        self.used_ids_cache = []
 
         # data for rendering in 2D scene
         self.cam_intrinsic_mat = None
@@ -95,7 +94,7 @@ class Viewer:
                    alpha=1,
                    del_after_show='True',
                    add_to_3D_scene = True,
-                   add_to_2D_scene = False):
+                   add_to_2D_scene = True):
         """
         add the points actor to viewer
         :param points: (list or array(N,3)),
@@ -156,7 +155,7 @@ class Viewer:
     def add_3D_boxes(self,boxes=None,
                      ids=None,
                      box_info=None,
-                     color="orange",
+                     color="blue",
                      add_to_3D_scene=True,
                      mesh_alpha = 0,
                      show_corner_spheres = True,
@@ -171,7 +170,7 @@ class Viewer:
                      show_box_info=True,
                      del_after_show=True,
                      add_to_2D_scene=True,
-                     caption_size=(0.06,0.06)
+                     caption_size=(0.05,0.05)
                      ):
         """
         add the boxes actor to viewer
@@ -198,6 +197,9 @@ class Viewer:
         if boxes is None:
             return
         boxes= convert_box_type(boxes,self.box_type)
+        if boxes is None:
+            return
+
         if ids is not None:
             colors = generate_objects_colors(ids,self.objects_color_map)
         else:
@@ -249,18 +251,21 @@ class Viewer:
     def add_3D_cars(self,boxes=None,
                      ids=None,
                      box_info=None,
-                     color="orange",
-                     mesh_alpha = 1,
-                     show_ids = True,
-                     show_box_info=True,
+                     color="blue",
+                     mesh_alpha = 0.1,
+                     show_ids = False,
+                     show_box_info=False,
                      del_after_show=True,
                      car_model_path="viewer/car.obj",
-                     caption_size = (0.05, 0.05)
+                     caption_size = (0.1, 0.1)
                     ):
 
         if boxes is None:
             return
         boxes= convert_box_type(boxes,self.box_type)
+        if boxes is None:
+            return
+
         if ids is not None:
             colors = generate_objects_colors(ids,self.objects_color_map)
         else:
@@ -270,9 +275,7 @@ class Viewer:
             bb = boxes[i]
 
             size = bb[3:6]
-            size[0]/=5.7
-            size[1]/=2
-            size[2]/=2
+
             ang=bb[6]
             ang = int(ang / (2 * np.pi) * 360)
 
@@ -283,43 +286,68 @@ class Viewer:
 
             if ids is not None:
                 ob_id = ids[i]
-            else:
-                ob_id = 0
-                while ob_id in self.used_ids_cache:
-                    ob_id+=1
-                self.used_ids_cache.append(ob_id)
+                if ob_id in self.tracks_actors_dict.keys():
+                    previous_ori=self.tracks_actors_dict[ob_id].GetOrientation()[2]
+                    self.tracks_actors_dict[ob_id].pos(0,0,0)
+                    self.tracks_actors_dict[ob_id].rotateZ(ang-previous_ori)
+                    self.tracks_actors_dict[ob_id].pos(bb[0], bb[1], bb[2])
 
+                    info = ""
+                    if ids is not None and show_ids:
+                        info = "ID: " + str(ids[i]) + '\n'
+                    if box_info is not None and show_box_info:
+                        info += str(box_info[i])
+                    if info != '':
+                        self.tracks_actors_dict[ob_id].caption(info,
+                                                               point=(bb[0], bb[1] - bb[4] / 2, bb[2] + bb[5] / 2),
+                                                               size=caption_size,
+                                                               alpha=1,
+                                                               c=color,
+                                                               font="Calco",
+                                                               justify='left')
+                        self.tracks_actors_dict[ob_id]._caption.SetBorder(False)
+                        self.tracks_actors_dict[ob_id]._caption.SetLeader(False)
 
-            if ob_id in self.tracks_actors_dict.keys():
-                previous_ori=self.tracks_actors_dict[ob_id].GetOrientation()[2]
-                self.tracks_actors_dict[ob_id].pos(0,0,0)
-                self.tracks_actors_dict[ob_id].rotateZ(ang-previous_ori)
-                self.tracks_actors_dict[ob_id].pos(bb[0], bb[1], bb[2])
-
-                info = ""
-                if ids is not None and show_ids:
-                    info = "ID: " + str(ids[i]) + '\n'
-                if box_info is not None and show_box_info:
-                    info += str(box_info[i])
-                if info != '':
-                    self.tracks_actors_dict[ob_id].caption(info,
-                                                           point=(bb[0], bb[1] - bb[4] / 2, bb[2] + bb[5] / 2),
-                                                           size=caption_size,
-                                                           alpha=1,
-                                                           c=color,
-                                                           font="Calco",
-                                                           justify='cent')
-                    self.tracks_actors_dict[ob_id]._caption.SetBorder(False)
-                    self.tracks_actors_dict[ob_id]._caption.SetLeader(False)
-
-                if del_after_show:
-                    self.actors.append(self.tracks_actors_dict[ob_id])
+                    if del_after_show:
+                        self.actors.append(self.tracks_actors_dict[ob_id])
+                    else:
+                        self.actors_without_del.append(self.tracks_actors_dict[ob_id])
                 else:
-                    self.actors_without_del.append(self.tracks_actors_dict[ob_id])
-            else:
 
-                new_car=load(car_model_path)
-                new_car.scale(0.65)
+                    new_car=load(car_model_path)
+                    new_car.scale((0.12,0.3,0.3))
+
+                    new_car.scale(size)
+                    new_car.rotateZ(ang)
+                    new_car.pos(bb[0], bb[1], bb[2])
+
+                    new_car.c(color)
+                    new_car.alpha(mesh_alpha)
+                    self.tracks_actors_dict[ob_id]=new_car
+                    info = ""
+                    if ids is not None and show_ids:
+                        info = "ID: " + str(ids[i]) + '\n'
+                    if box_info is not None and show_box_info:
+                        info += str(box_info[i])
+                    if info != '':
+                        self.tracks_actors_dict[ob_id].caption(info,
+                                                               point=(bb[0], bb[1] - bb[4] / 2, bb[2] + bb[5] / 2),
+                                                               size=caption_size,
+                                                               alpha=1,
+                                                               c=color,
+                                                               font="Calco",
+                                                               justify='left')
+                        self.tracks_actors_dict[ob_id]._caption.SetBorder(False)
+                        self.tracks_actors_dict[ob_id]._caption.SetLeader(False)
+
+                    if del_after_show:
+                        self.actors.append(self.tracks_actors_dict[ob_id])
+                    else:
+                        self.actors_without_del.append(self.tracks_actors_dict[ob_id])
+
+            else:
+                new_car = load(car_model_path)
+                new_car.scale((0.12, 0.3, 0.3))
 
                 new_car.scale(size)
                 new_car.rotateZ(ang)
@@ -327,28 +355,25 @@ class Viewer:
 
                 new_car.c(color)
                 new_car.alpha(mesh_alpha)
-                self.tracks_actors_dict[ob_id]=new_car
+
                 info = ""
-                if ids is not None and show_ids:
-                    info = "ID: " + str(ids[i]) + '\n'
+
                 if box_info is not None and show_box_info:
                     info += str(box_info[i])
                 if info != '':
-                    self.tracks_actors_dict[ob_id].caption(info,
-                                                           point=(bb[0], bb[1] - bb[4] / 2, bb[2] + bb[5] / 2),
-                                                           size=caption_size,
-                                                           alpha=1,
-                                                           c=color,
-                                                           font="Calco",
-                                                           justify='cent')
-                    self.tracks_actors_dict[ob_id]._caption.SetBorder(False)
-                    self.tracks_actors_dict[ob_id]._caption.SetLeader(False)
-
+                    new_car.caption(info,
+                                   point=(bb[0], bb[1] - bb[4] / 2, bb[2] + bb[5] / 2),
+                                   size=caption_size,
+                                   alpha=1,
+                                   c=color,
+                                   font="Calco",
+                                   justify='cent')
+                    new_car._caption.SetBorder(False)
+                    new_car._caption.SetLeader(False)
                 if del_after_show:
-                    self.actors.append(self.tracks_actors_dict[ob_id])
+                    self.actors.append(new_car)
                 else:
-                    self.actors_without_del.append(self.tracks_actors_dict[ob_id])
-
+                    self.actors_without_del.append(new_car)
 
     def add_image(self,im):
         """
@@ -366,17 +391,103 @@ class Viewer:
         :return:
         """
 
-        self.vi.show(self.actors+self.actors_without_del)
-
+        self.vi.show(self.actors+self.actors_without_del,resetcam=False)
+        self.vi.clear()
         self.actors.clear()
         self.points_info.clear()
         self.boxes_info.clear()
-        self.used_ids_cache.clear()
 
-    def show_2D(self, ):
+    def show_2D(self,box_color = (255,0,0),show_box_info=False,show_ids=True,points_colors=(0,0,255)):
+        """
+        show object on image
+        :param box_color: (list or tuple(3,)), default color
+        :param show_box_info: (bool), show box infos
+        :param show_ids: (bool),show box ids
+        :param show_ids: (tuple(3,),default points color
+        :return:
+        """
 
-        assert self.cam_extrinsic_mat is None, "The cam extrinsic matrix is not set!"
+        if (self.cam_extrinsic_mat is None) or (self.cam_intrinsic_mat is None) or (self.image is None):
+            return
 
-        assert self.cam_intrinsic_mat is None, "The cam intrinsic matrix is not set!"
+        H,W,_ = self.image.shape
 
-        assert self.image is None, "The image is not added!"
+        for info in self.boxes_info:
+            boxes, ids, colors, box_info=info
+
+            if boxes is None:
+                continue
+            elif len(boxes) == 0:
+                continue
+            else:
+
+                for box_id in range(len(boxes)):
+                    box = boxes[box_id]
+                    if type(colors) is not str:
+                        color = [colors[box_id][2],colors[box_id][1],colors[box_id][0]]
+                    else:
+                        color = box_color
+
+                    pts_3d_cam = get_box_points(box)
+                    pts_3d_cam = velo_to_cam(pts_3d_cam[:,0:3],self.cam_extrinsic_mat)
+
+                    img_pts = np.matmul(pts_3d_cam, self.cam_intrinsic_mat.T)  # (N, 3)
+                    x, y = img_pts[:, 0] / img_pts[:, 2], img_pts[:, 1] / img_pts[:, 2]
+
+                    x = np.clip(x, 2, W-2)
+                    y = np.clip(y, 2, H-2)
+
+                    x = x.astype(np.int)
+                    y = y.astype(np.int)
+
+                    self.image[y, x] = color
+
+                    x2 = x + 1
+                    self.image[y, x2] = color
+                    y2 = y + 1
+                    self.image[y2, x] = color
+                    self.image[y2, x2] = color
+
+                    info = ""
+                    if ids is not None and show_ids:
+                        info +=  str(ids[box_id])+" "
+                    if box_info is not None and show_box_info:
+                        info += str(box_info[box_id])
+
+                    if info != '':
+
+                        text = info
+                        org = ((max(x) - min(x)) // 2 + min(x), min(y) - 5)
+                        fontFace = cv2.FONT_HERSHEY_DUPLEX
+                        fontScale = 0.7
+                        fontcolor = color  # BGR
+                        thickness = 1
+                        lineType = 4
+                        cv2.putText(self.image, text, org, fontFace, fontScale, fontcolor, thickness, lineType)
+
+        for points,colors in self.points_info:
+
+            if type(colors) is tuple:
+
+                color = [colors[2],colors[1],colors[0]]
+            else:
+                color = points_colors
+
+            pts_3d_cam = velo_to_cam(points[:, 0:3], self.cam_extrinsic_mat)
+
+            img_pts = np.matmul(pts_3d_cam, self.cam_intrinsic_mat.T)  # (N, 3)
+            x, y = img_pts[:, 0] / img_pts[:, 2], img_pts[:, 1] / img_pts[:, 2]
+
+            x = np.clip(x, 2, W - 2)
+            y = np.clip(y, 2, H - 2)
+
+            x = x.astype(np.int)
+            y = y.astype(np.int)
+
+            self.image[y, x] = color
+
+        cv2.imshow('im',self.image)
+        cv2.waitKey(10)
+        self.points_info.clear()
+        self.boxes_info.clear()
+

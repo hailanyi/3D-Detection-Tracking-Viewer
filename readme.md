@@ -5,7 +5,7 @@ Currently, it is still updating.
 ## Design pattern
 This code includes two parts, one for data loading, other one for visualization of 3D detection and tracking results.
 The overall framework of design is as shown below:
-![](./doc/framework.jpg)
+![](./doc/125.gif)
 ## Prepare data 
 Kitti detection dataset
 ```
