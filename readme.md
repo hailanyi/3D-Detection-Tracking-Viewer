@@ -3,8 +3,8 @@ This project was developed for view 3D object detection and tracking results.
 It supports rendering 3D bounding boxes as car models and rendering boxes on images.
 Currently, it is still updating. 
 ## Features
-* Rending boxes as cars
-* Captioning box id(infos) on 3D scene
+* Rendering boxes as cars
+* Captioning box ids(infos) in 3D scene
 * Projecting 3D box or points on 2D image  
 ![](./doc/125.gif)
 ## Design pattern
