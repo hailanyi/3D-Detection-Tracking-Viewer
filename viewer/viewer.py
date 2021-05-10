@@ -12,11 +12,14 @@ class Viewer:
     def __init__(self,box_type = "OpenPCdet"):
         self.objects_color_map = generate_objects_color_map('rainbow')
         self.box_type = box_type
+        self.vi = Plotter(bg=(255, 255, 255))
+        self.set_lights()
 
         # data for rendering in 3D scene
         self.actors = []
         self.actors_without_del = []
         self.tracks_actors_dict = {}
+        self.used_ids_cache = []
 
         # data for rendering in 2D scene
         self.cam_intrinsic_mat = None
@@ -24,6 +27,27 @@ class Viewer:
         self.boxes_info = [] # (boxes:array(N,7), ids:array(N,), colors:array(N,3) or str, box_info:list(N,))
         self.points_info = [] # (boxes:array(N,3), colors:array(N,3) or str)
         self.image = None
+
+
+
+    def set_lights(self):
+        def get_light(pos=(0, 0, 0), focalPoint=(0, 0, 0)):
+            light = vtk.vtkLight()
+
+            light.SetPosition(pos)
+            light.SetFocalPoint(focalPoint)
+            light.SetIntensity(0.65)
+
+            return light
+
+        light_actors = []
+
+        light_actors.append(get_light(pos=(400, 400, 100), focalPoint=(0, 0, 0)))
+        light_actors.append(get_light(pos=(-400, 400, 100), focalPoint=(0, 0, 0)))
+        light_actors.append(get_light(pos=(400, -400, 100), focalPoint=(0, 0, 0)))
+        light_actors.append(get_light(pos=(-400, -400, 100), focalPoint=(0, 0, 0)))
+        for a in light_actors:
+            self.vi.renderer.AddLight(a)
 
 
     def set_ob_color_map(self,color_map_name='rainbow'):
@@ -37,7 +61,7 @@ class Viewer:
 
         return self.objects_color_map
 
-    def set_ego_car(self,ego_car_path = "ego_car.3ds"):
+    def set_ego_car(self,ego_car_path = "viewer/ego_car.3ds"):
         """
         setting ego car
         :param ego_car_path: (str), path of ego car model
@@ -147,6 +171,7 @@ class Viewer:
                      show_box_info=True,
                      del_after_show=True,
                      add_to_2D_scene=True,
+                     caption_size=(0.06,0.06)
                      ):
         """
         add the boxes actor to viewer
@@ -183,7 +208,14 @@ class Viewer:
 
         if add_to_3D_scene:
             if del_after_show:
-                self.actors += get_mesh_boxes(boxes,colors,mesh_alpha,ids,show_ids,box_info,show_box_info)
+                self.actors += get_mesh_boxes(boxes,
+                                              colors,
+                                              mesh_alpha,
+                                              ids,
+                                              show_ids,
+                                              box_info,
+                                              show_box_info,
+                                              caption_size)
                 self.actors += get_line_boxes(boxes,
                                               colors,
                                               show_corner_spheres,
@@ -195,7 +227,14 @@ class Viewer:
                                               line_width,
                                               line_alpha)
             else:
-                self.actors_without_del += get_mesh_boxes(boxes,colors,mesh_alpha,ids,show_ids,box_info,show_box_info)
+                self.actors_without_del += get_mesh_boxes(boxes,
+                                                          colors,
+                                                          mesh_alpha,
+                                                          ids,
+                                                          show_ids,
+                                                          box_info,
+                                                          show_box_info,
+                                                          caption_size)
                 self.actors_without_del += get_line_boxes(boxes,
                                                           colors,
                                                           show_corner_spheres,
@@ -207,9 +246,109 @@ class Viewer:
                                                           line_width,
                                                           line_alpha)
 
-    def add_3D_cars(self):
+    def add_3D_cars(self,boxes=None,
+                     ids=None,
+                     box_info=None,
+                     color="orange",
+                     mesh_alpha = 1,
+                     show_ids = True,
+                     show_box_info=True,
+                     del_after_show=True,
+                     car_model_path="viewer/car.obj",
+                     caption_size = (0.05, 0.05)
+                    ):
 
-        return
+        if boxes is None:
+            return
+        boxes= convert_box_type(boxes,self.box_type)
+        if ids is not None:
+            colors = generate_objects_colors(ids,self.objects_color_map)
+        else:
+            colors = color
+
+        for i in range(len(boxes)):
+            bb = boxes[i]
+
+            size = bb[3:6]
+            size[0]/=5.7
+            size[1]/=2
+            size[2]/=2
+            ang=bb[6]
+            ang = int(ang / (2 * np.pi) * 360)
+
+            if type(colors) is str:
+                color = colors
+            else:
+                color = colors[i]
+
+            if ids is not None:
+                ob_id = ids[i]
+            else:
+                ob_id = 0
+                while ob_id in self.used_ids_cache:
+                    ob_id+=1
+                self.used_ids_cache.append(ob_id)
+
+
+            if ob_id in self.tracks_actors_dict.keys():
+                previous_ori=self.tracks_actors_dict[ob_id].GetOrientation()[2]
+                self.tracks_actors_dict[ob_id].pos(0,0,0)
+                self.tracks_actors_dict[ob_id].rotateZ(ang-previous_ori)
+                self.tracks_actors_dict[ob_id].pos(bb[0], bb[1], bb[2])
+
+                info = ""
+                if ids is not None and show_ids:
+                    info = "ID: " + str(ids[i]) + '\n'
+                if box_info is not None and show_box_info:
+                    info += str(box_info[i])
+                if info != '':
+                    self.tracks_actors_dict[ob_id].caption(info,
+                                                           point=(bb[0], bb[1] - bb[4] / 2, bb[2] + bb[5] / 2),
+                                                           size=caption_size,
+                                                           alpha=1,
+                                                           c=color,
+                                                           font="Calco",
+                                                           justify='cent')
+                    self.tracks_actors_dict[ob_id]._caption.SetBorder(False)
+                    self.tracks_actors_dict[ob_id]._caption.SetLeader(False)
+
+                if del_after_show:
+                    self.actors.append(self.tracks_actors_dict[ob_id])
+                else:
+                    self.actors_without_del.append(self.tracks_actors_dict[ob_id])
+            else:
+
+                new_car=load(car_model_path)
+                new_car.scale(0.65)
+
+                new_car.scale(size)
+                new_car.rotateZ(ang)
+                new_car.pos(bb[0], bb[1], bb[2])
+
+                new_car.c(color)
+                new_car.alpha(mesh_alpha)
+                self.tracks_actors_dict[ob_id]=new_car
+                info = ""
+                if ids is not None and show_ids:
+                    info = "ID: " + str(ids[i]) + '\n'
+                if box_info is not None and show_box_info:
+                    info += str(box_info[i])
+                if info != '':
+                    self.tracks_actors_dict[ob_id].caption(info,
+                                                           point=(bb[0], bb[1] - bb[4] / 2, bb[2] + bb[5] / 2),
+                                                           size=caption_size,
+                                                           alpha=1,
+                                                           c=color,
+                                                           font="Calco",
+                                                           justify='cent')
+                    self.tracks_actors_dict[ob_id]._caption.SetBorder(False)
+                    self.tracks_actors_dict[ob_id]._caption.SetLeader(False)
+
+                if del_after_show:
+                    self.actors.append(self.tracks_actors_dict[ob_id])
+                else:
+                    self.actors_without_del.append(self.tracks_actors_dict[ob_id])
+
 
     def add_image(self,im):
         """
@@ -220,18 +359,19 @@ class Viewer:
         self.image = im
         return
 
-    def show_3D(self,bg_color=(250,250,250)):
+    def show_3D(self):
         """
         show objects in 3D scenes, before show_3D, you should add some objects into the current scenes
         :param bg_color: (tuple(3,) or list(3,) or str), background color of 3D scene
         :return:
         """
 
-        show(self.actors+self.actors_without_del,bg=bg_color)
+        self.vi.show(self.actors+self.actors_without_del)
 
         self.actors.clear()
         self.points_info.clear()
         self.boxes_info.clear()
+        self.used_ids_cache.clear()
 
     def show_2D(self, ):
 

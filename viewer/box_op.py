@@ -26,7 +26,13 @@ def convert_box_type(boxes,input_box_type = 'Kitti'):
         new_boxes[:, 2] += boxes[:, 0] / 2
         return new_boxes
 
-def get_mesh_boxes(boxes,colors="red",mesh_alpha=0.4,ids=None,show_ids=False,box_info=None,show_box_info=False):
+def get_mesh_boxes(boxes,colors="red",
+                   mesh_alpha=0.4,
+                   ids=None,
+                   show_ids=False,
+                   box_info=None,
+                   show_box_info=False,
+                   caption_size=(0.05,0.05)):
     """
     convert boxes array to vtk mesh boxes actors
     :param boxes: (array(N,7)), unified boxes array
@@ -39,7 +45,6 @@ def get_mesh_boxes(boxes,colors="red",mesh_alpha=0.4,ids=None,show_ids=False,box
     :return: (list(N,)), a list of vtk mesh boxes
     """
     vtk_boxes_list = []
-    caption_size = (0.05, 0.05)
     for i in range(len(boxes)):
         box = boxes[i]
         angle = box[6]
@@ -59,8 +64,13 @@ def get_mesh_boxes(boxes,colors="red",mesh_alpha=0.4,ids=None,show_ids=False,box
             info = "ID: "+str(ids[i])+'\n'
         if box_info is not None and show_box_info:
             info+=str(box_info[i])
-        if info is not None:
-            vtk_box.caption(info,point=(box[0], box[1]-box[4]/2, box[2]+box[5]/2),size=caption_size,alpha=1,c=this_c, font="Calco")
+        if info !='':
+            vtk_box.caption(info,point=(box[0],
+                            box[1]-box[4]/4, box[2]+box[5]/2),
+                            size=caption_size,
+                            alpha=1,c=this_c,
+                            font="Calco",
+                            justify='cent')
             vtk_box._caption.SetBorder(False)
             vtk_box._caption.SetLeader(False)
 
@@ -172,8 +182,6 @@ def get_line_boxes(boxes,
             this_c = colors
             corner_colors = colors
             arraw_colors = colors
-
-        print(this_c)
 
         lines = Lines(corner_points1[:, 0:3], corner_points2[:, 0:3], c=this_c, alpha=line_alpha, lw=line_width)
 

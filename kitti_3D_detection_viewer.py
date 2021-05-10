@@ -19,7 +19,9 @@ def show():
     new_box[:,3] = box[:,5]
     new_box[:,4] = -box[:,3]
     new_box[:,5] = -box[:,4]
-    vi.add_3D_boxes(new_box,ids=[20,13,44],box_info=['Ve: 1','Ve: 2','Ve: 3'])
+
+    #vi.add_3D_boxes(new_box,ids=[20,13,44],box_info=['Ve: 1','Ve: 2','Ve: 3'])
+    vi.add_3D_cars(new_box, ids=[20, 13, 44], box_info=['Ve: 1', 'Ve: 2', 'Ve: 3'])
 
     vi.show_3D()
 
