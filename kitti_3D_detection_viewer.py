@@ -3,7 +3,7 @@ import numpy as np
 from dataset.kitti_dataset import KittiDetectionDataset
 
 def kitti_viewer():
-    root="H:/数据集/object detection/kitti/training"
+    root="data/kitti_detection/training"
 
     dataset = KittiDetectionDataset(root)
 
