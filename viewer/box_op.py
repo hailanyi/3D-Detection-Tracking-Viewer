@@ -11,9 +11,9 @@ def convert_box_type(boxes,input_box_type = 'Kitti'):
     boxes = np.array(boxes)
     if len(boxes) == 0:
         return None
-    assert  input_box_type in ["Kitti","OpenPCDet"], 'unsupported input box type!'
+    assert  input_box_type in ["Kitti","OpenPCDet","Waymo"], 'unsupported input box type!'
 
-    if input_box_type == "OpenPCDet":
+    if input_box_type in ["OpenPCDet","Waymo"]:
         return boxes
 
     if input_box_type == "Kitti": #(h,w,l,x,y,z,yaw) -> (x,y,z,l,w,h,yaw)
