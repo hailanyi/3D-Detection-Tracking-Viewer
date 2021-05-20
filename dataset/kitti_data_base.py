@@ -128,7 +128,7 @@ def read_tracking_label(path):
             ob_id = int(line[1])
 
             if this_name != "DontCare":
-                line = np.array(line[-7:],np.float32).tolist()
+                line = np.array(line[10:17],np.float32).tolist()
                 line.append(ob_id)
 
 

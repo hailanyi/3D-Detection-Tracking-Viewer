@@ -33,17 +33,23 @@ class KittiDetectionDataset:
         return P2,V2C,points,image,labels,label_names
 
 class KittiTrackingDataset:
-    def __init__(self,root_path,seq_id):
+    def __init__(self,root_path,seq_id,label_path=None):
         self.seq_name = str(seq_id).zfill(4)
         self.root_path = root_path
         self.velo_path = os.path.join(self.root_path,"velodyne",self.seq_name)
         self.image_path = os.path.join(self.root_path,"image_02",self.seq_name)
         self.calib_path = os.path.join(self.root_path,"calib",self.seq_name)
-        self.label_path = os.path.join(self.root_path,"label_02",self.seq_name)
+
+
 
         self.all_ids = os.listdir(self.velo_path)
         calib_path = self.calib_path + '.txt'
-        label_path = self.label_path + ".txt"
+
+        if label_path is None:
+
+            label_path = os.path.join(self.root_path, "label_02", self.seq_name+'.txt')
+
+
         self.P2, self.V2C = read_calib(calib_path)
         self.labels, self.label_names = read_tracking_label(label_path)
 
