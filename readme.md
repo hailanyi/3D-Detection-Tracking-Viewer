@@ -31,10 +31,6 @@ Kitti tracking dataset
 ```
 # For Kitti Tracking Dataset         
 └── kitti_tracking
-       ├── ImageSets
-       |      ├──test.txt
-       |      ├──train.txt
-       |      └──val.txt
        ├── testing 
        |      ├──calib
        |      |    ├──0000.txt
