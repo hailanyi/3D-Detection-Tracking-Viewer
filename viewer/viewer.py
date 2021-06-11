@@ -9,10 +9,10 @@ class Viewer:
     """
     default box type: "OpenPCDet", (x,y,z,l,w,h,yaw)
     """
-    def __init__(self,box_type = "OpenPCDet"):
+    def __init__(self,box_type = "OpenPCDet",bg=(255, 255, 255)):
         self.objects_color_map = generate_objects_color_map('rainbow')
         self.box_type = box_type
-        self.vi = Plotter(bg=(255, 255, 255))
+        self.vi = Plotter(bg=bg)
         self.set_lights()
 
         # data for rendering in 3D scene
@@ -94,7 +94,8 @@ class Viewer:
                    alpha=1,
                    del_after_show='True',
                    add_to_3D_scene = True,
-                   add_to_2D_scene = True):
+                   add_to_2D_scene = True,
+                   color_map_name = "rainbow"):
         """
         add the points actor to viewer
         :param points: (list or array(N,3)),
@@ -105,10 +106,11 @@ class Viewer:
         :param del_after_show: (bool), clear the points actor after show
         :param add_to_3D_scene: (bool)
         :param add_to_2D_scene: (bool)
+        :param color_map_name: (str), the name of objects color map, such as "rainbow", "viridis","brg","gnuplot","hsv"
         :return:
         """
         if scatter_filed is not None:
-            colors = generate_scatter_colors(scatter_filed)
+            colors = generate_scatter_colors(scatter_filed,color_map_name=color_map_name)
         else:
             colors = color
 

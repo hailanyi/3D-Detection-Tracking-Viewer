@@ -4,12 +4,15 @@ from .kitti_data_base import *
 import os
 
 class KittiDetectionDataset:
-    def __init__(self,root_path):
+    def __init__(self,root_path,label_path = None):
         self.root_path = root_path
         self.velo_path = os.path.join(self.root_path,"velodyne")
         self.image_path = os.path.join(self.root_path,"image_2")
         self.calib_path = os.path.join(self.root_path,"calib")
-        self.label_path = os.path.join(self.root_path,"label_2")
+        if label_path is None:
+            self.label_path = os.path.join(self.root_path, "label_2")
+        else:
+            self.label_path = label_path
 
         self.all_ids = os.listdir(self.velo_path)
 

@@ -3,11 +3,12 @@ import numpy as np
 from dataset.kitti_dataset import KittiDetectionDataset
 
 def kitti_viewer():
-    root="data/kitti_detection/training"
-
-    dataset = KittiDetectionDataset(root)
+    root="H:/data/object detection/kitti/training"
+    label_path = "H:/data/object detection/kitti/training/label_2"
+    dataset = KittiDetectionDataset(root,label_path)
 
     vi = Viewer(box_type="Kitti")
+    vi.set_ob_color_map('gnuplot')
 
     for i in range(len(dataset)):
         P2, V2C, points, image, labels, label_names = dataset[i]
@@ -16,7 +17,7 @@ def kitti_viewer():
         labels = labels[mask]
         label_names = label_names[mask]
 
-        vi.add_points(points[:,:3],scatter_filed=points[:,2])
+        vi.add_points(points[:,:3],scatter_filed=points[:,2],color_map_name='viridis')
         vi.add_3D_boxes(labels,box_info=label_names)
         vi.add_3D_cars(labels, box_info=label_names)
         vi.add_image(image)
