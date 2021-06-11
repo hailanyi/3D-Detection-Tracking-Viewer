@@ -74,7 +74,7 @@ opencv
 matplotlab
 ```
 ## Usage
-##### Setting boxes type & viewer background color
+#### 1. Setting boxes type & viewer background color
 
 Currently this code support Kitti (h,w,l,x,y,z,yaw) and Waymo OpenPCDet (x,y,z,l,w,h,yaw) box type.
 You can set the box type and background color when init a viewer as 
@@ -83,14 +83,14 @@ from viewer.viewer import Viewer
 
 vi = Viewer(box_type="Kitti",bg = (255,255,255))
 ```
-##### Setting objects color map
+#### 2. Setting objects color map
 You can set the objects color map for view tracking results, it is set to
  [matplotlab.pypot](https://matplotlib.org/stable/tutorials/colors/colormaps.html) colors.
 The common used color maps are "rainbow", "viridis","brg","gnuplot","hsv" and etc.
 ```
 vi.set_ob_color_map('rainbow')
 ```
-##### Add colorized point clouds to 3D scene
+#### 3. Add colorized point clouds to 3D scene
 The viewer receive a set of points, it must be a array with shape (N,3).
 If you want to view the scatter filed, you should to set the 'scatter_filed' with a shape (N,), and 
 set the 'color_map_name' to specify the colors.
@@ -108,7 +108,7 @@ vi.add_points(points[:,0:3],
 ```
 ![](./doc/points.png)
 
-##### Add boxes or cars to 3D scene
+#### 4. Add boxes or cars to 3D scene
 The viewer receive a set of boxes, it must be a array with shape (N,7). You can set the boxes to meshes or lines only,
 you also can set the line width, conner points. Besides, you can provide a set of IDs(int) to colorize the boxes, and 
 put a set of additional infos to caption the boxes. Note that, the color will set to the color of "color" arg if the
@@ -153,7 +153,7 @@ vi.add_3D_cars(boxes=boxes[:,0:7],
 ```
 ![](./doc/cars.png)
 
-##### View boxes or points on image
+#### 5. View boxes or points on image
 To view the 3D box and points on image, firstly should set the camera intrinsic, extrinsic mat, and put a image.
 Besides, when add the boxes and points, the 'add_to_2D_scene' should be set to True.
 ```
@@ -161,7 +161,7 @@ vi.add_image(image)
 vi.set_extrinsic_mat(V2C)
 vi.set_intrinsic_mat(P2)
 ```
-##### Show 2D and 3D results
+#### 6. Show 2D and 3D results
 To show a single frame, you can directly run ```vi.show_2D()```, ``` vi.show_3D()```. The visualization window will
 not be closed until you press the "Enter" key.
  You can change the viewing angle by dragging the mouse within the visualization window.
