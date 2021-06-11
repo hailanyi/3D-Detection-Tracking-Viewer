@@ -63,7 +63,8 @@ The overall framework of design is as shown below:
 ```
 * Waymo dataset
 
-Please refer to the Waymo dataset organization of [OpenPCDet](https://github.com/open-mmlab/OpenPCDet)
+Please refer to the  [OpenPCDet](https://github.com/open-mmlab/OpenPCDet)
+for Waymo dataset organization.
 ## Requirements
 ```
 python3
@@ -74,18 +75,18 @@ opencv
 matplotlab
 ```
 ## Usage
-#### 1. Setting boxes type & viewer background color
+#### 1. Set boxes type & viewer background color
 
-Currently this code support Kitti (h,w,l,x,y,z,yaw) and Waymo OpenPCDet (x,y,z,l,w,h,yaw) box type.
-You can set the box type and background color when init a viewer as 
+Currently this code supports Kitti (h,w,l,x,y,z,yaw) and Waymo OpenPCDet (x,y,z,l,w,h,yaw) box type.
+You can set the box type and background color when initializing a viewer as 
 ```
 from viewer.viewer import Viewer
 
 vi = Viewer(box_type="Kitti",bg = (255,255,255))
 ```
-#### 2. Setting objects color map
-You can set the objects color map for view tracking results, it is set to
- [matplotlab.pypot](https://matplotlib.org/stable/tutorials/colors/colormaps.html) colors.
+#### 2. Set objects color map
+You can set the objects color map for view tracking results, same as
+ [matplotlab.pypot](https://matplotlib.org/stable/tutorials/colors/colormaps.html) color map.
 The common used color maps are "rainbow", "viridis","brg","gnuplot","hsv" and etc.
 ```
 vi.set_ob_color_map('rainbow')
@@ -97,14 +98,14 @@ set the 'color_map_name' to specify the colors.
 If the 'scatter_filed' is None, the points will show in color of 'color' arg.
 ```
 vi.add_points(points[:,0:3],
-           radius = 2,
-           color = (150,150,150),
-           scatter_filed=points[:,2],
-           alpha=1,
-           del_after_show='True',
-           add_to_3D_scene = True,
-           add_to_2D_scene = True,
-           color_map_name = "viridis"):
+               radius = 2,
+               color = (150,150,150),
+               scatter_filed=points[:,2],
+               alpha=1,
+               del_after_show='True',
+               add_to_3D_scene = True,
+               add_to_2D_scene = True,
+               color_map_name = "viridis"):
 ```
 ![](./doc/points.png)
 
@@ -155,7 +156,7 @@ vi.add_3D_cars(boxes=boxes[:,0:7],
 
 #### 5. View boxes or points on image
 To view the 3D box and points on image, firstly should set the camera intrinsic, extrinsic mat, and put a image.
-Besides, when add the boxes and points, the 'add_to_2D_scene' should be set to True.
+Besides, when adding the boxes and points, the 'add_to_2D_scene' should be set to True.
 ```
 vi.add_image(image)
 vi.set_extrinsic_mat(V2C)
@@ -168,8 +169,11 @@ not be closed until you press the "Enter" key.
 To show multiple frames, you can use the for loop, and press the "Enter" key to view a sequence data.
 ```
 for i in range(len(dataset)):
-    box = dataset[i]
-    vi.add_3D_boxes(box)
+    V2C, P2, image, boxes = dataset[i]
+    vi.add_3D_boxes(boxes)
+    vi.add_image(image)
+    vi.set_extrinsic_mat(V2C)
+    vi.set_intrinsic_mat(P2)
     vi.show_2D()
     vi.show_3D()
 ```
