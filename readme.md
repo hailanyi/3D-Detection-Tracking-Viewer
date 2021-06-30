@@ -105,7 +105,7 @@ vi.add_points(points[:,0:3],
                del_after_show='True',
                add_to_3D_scene = True,
                add_to_2D_scene = True,
-               color_map_name = "viridis"):
+               color_map_name = "viridis")
 ```
 ![](./doc/points.png)
 
@@ -150,7 +150,7 @@ vi.add_3D_cars(boxes=boxes[:,0:7],
                  del_after_show=True,
                  car_model_path="viewer/car.obj",
                  caption_size = (0.1, 0.1)
-                ):
+                )
 ```
 ![](./doc/cars.png)
 
