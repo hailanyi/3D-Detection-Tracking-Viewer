@@ -18,7 +18,7 @@ def kitti_viewer():
             labels = labels[mask]
             label_names = label_names[mask]
             vi.add_3D_boxes(labels, ids=labels[:, -1].astype(int), box_info=label_names,caption_size=(0.09,0.09),mesh_alpha=0.3)
-            vi.add_3D_cars(labels, ids=labels[:, -1].astype(int), box_info=label_names,show_ids=True,show_box_info=True, mesh_alpha=1)
+            vi.add_3D_cars(labels, ids=labels[:, -1].astype(int), mesh_alpha=1)
         vi.add_points(points[:,:3])
 
         vi.add_image(image)
