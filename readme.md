@@ -40,12 +40,6 @@ The overall framework of design is as shown below:
        |      |    ├──0000
        |      |    ├──....
        |      |    └──0028
-       |      ├──pose
-       |      |    ├──0000
-       |      |    |    └──pose.txt
-       |      |    ├──....
-       |      |    └──0028
-       |      |         └──pose.txt
        |      ├──label_02
        |      |    ├──0000.txt
        |      |    ├──....txt
@@ -57,7 +51,6 @@ The overall framework of design is as shown below:
        └── training # the structure is same as testing set
               ├──calib
               ├──image_02
-              ├──pose
               ├──label_02
               └──velodyne 
 ```
