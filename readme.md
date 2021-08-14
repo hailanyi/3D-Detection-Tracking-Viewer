@@ -65,7 +65,7 @@ numpy
 vedo
 vtk
 opencv
-matplotlab
+matplotlib
 ```
 ## Usage
 #### 1. Set boxes type & viewer background color
