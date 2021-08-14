@@ -157,8 +157,10 @@ vi.set_intrinsic_mat(P2)
 ```
 #### 6. Show 2D and 3D results
 To show a single frame, you can directly run ```vi.show_2D()```, ``` vi.show_3D()```. The visualization window will
-not be closed until you press the "Enter" key.
- You can change the viewing angle by dragging the mouse within the visualization window.
+not close until you press the "Enter" key. 
+Please zoom out the 3D scene by scrolling the middle mouse button backward, and then you can see the point cloud in this window.
+You can change the viewing angle by dragging the mouse within the visualization window.
+
 To show multiple frames, you can use the for loop, and press the "Enter" key to view a sequence data.
 ```
 for i in range(len(dataset)):
