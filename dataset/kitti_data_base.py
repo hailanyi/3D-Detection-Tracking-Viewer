@@ -142,7 +142,7 @@ def read_tracking_label(path):
     return frame_dict,names_dict
 
 if __name__ == '__main__':
-    path = 'H:/数据集/traking/training/label_02/0000.txt'
+    path = 'H:/dataset/traking/training/label_02/0000.txt'
     labels,a = read_tracking_label(path)
     print(a)
 
