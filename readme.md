@@ -1,7 +1,7 @@
 # 3D Detection & Tracking Viewer
 This project was developed for view 3D object detection and tracking results.
 It supports rendering 3D bounding boxes as car models and rendering boxes on images.
-Currently, it is still updating. 
+
 ## Features
 * Rendering boxes as cars
 * Captioning box ids(infos) in 3D scene
