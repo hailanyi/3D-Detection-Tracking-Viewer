@@ -235,7 +235,7 @@ def get_box_points(points, pose=None):
     d_w_p = -np.sort(-np.arange(0, w / 2, w / (point_num*2))[0:point_num])
     d_w_n = np.arange(-w / 2,0,  w / (point_num*2))[0:point_num]
 
-    d_l_p = np.arange(l / 2, l*(3/3) , (l*(3/3)-l / 2) / (point_num*2))[0:point_num]
+    d_l_p = np.arange(l / 2, l*(4/7) , (l*(4/7)-l / 2) / (point_num*2))[0:point_num]
 
 
     d1 = np.zeros(shape=(point_num, 4))
