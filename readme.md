@@ -85,17 +85,17 @@ The common used color maps are "rainbow", "viridis","brg","gnuplot","hsv" and et
 vi.set_ob_color_map('rainbow')
 ```
 #### 3. Add colorized point clouds to 3D scene
-The viewer receive a set of points, it must be a array with shape (N,3).
-If you want to view the scatter filed, you should to set the 'scatter_filed' with a shape (N,), and 
+The viewer receives a set of points, it must be a array with shape (N,3).
+If you want to view the scatter filed, you should set the 'scatter_filed' with a shape (N,), and 
 set the 'color_map_name' to specify the colors.
 If the 'scatter_filed' is None, the points will show in color of 'color' arg.
 ```
 vi.add_points(points[:,0:3],
                radius = 2,
                color = (150,150,150),
-               scatter_filed=points[:,2],
+               scatter_filed = points[:,2],
                alpha=1,
-               del_after_show='True',
+               del_after_show = True,
                add_to_3D_scene = True,
                add_to_2D_scene = True,
                color_map_name = "viridis")
@@ -103,8 +103,8 @@ vi.add_points(points[:,0:3],
 ![](./doc/points.png)
 
 #### 4. Add boxes or cars to 3D scene
-The viewer receive a set of boxes, it must be a array with shape (N,7). You can set the boxes to meshes or lines only,
-you also can set the line width, conner points. Besides, you can provide a set of IDs(int) to colorize the boxes, and 
+The viewer receives a set of boxes, it must be a array with shape (N,7). You can set the boxes to meshes or lines only,
+you can also set the line width, conner points. Besides, you can provide a set of IDs(int) to colorize the boxes, and 
 put a set of additional infos to caption the boxes. Note that, the color will set to the color of "color" arg if the
 ids is None.
 ```
