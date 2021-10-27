@@ -9,7 +9,7 @@ It supports rendering 3D bounding boxes as car models and rendering boxes on ima
 ![](./doc/125.gif)
 ## Design pattern
 This code includes two parts, one for data loading, other one for visualization of 3D detection and tracking results.
-The overall framework of design is as shown below:
+The overall framework of design is shown below:
 ![](./doc/framework.jpg)
 ## Prepare data 
 * Kitti detection dataset
