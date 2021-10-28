@@ -122,7 +122,7 @@ class Viewer:
                 self.actors.append(Points(points,r=radius,c=colors,alpha=alpha))
 
             else:
-                self.actors_without_del.append(Points(Points,r=radius,c=colors,alpha=alpha))
+                self.actors_without_del.append(Points(points,r=radius,c=colors,alpha=alpha))
 
     def add_spheres(self,points,
                     radius = 0.3,
