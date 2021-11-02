@@ -11,6 +11,8 @@ It supports rendering 3D bounding boxes as car models and rendering boxes on ima
 This code includes two parts, one for data loading, other one for visualization of 3D detection and tracking results.
 The overall framework of design is shown below:
 ![](./doc/framework.jpg)
+## Change log
+* (2021.11.2) update 'Requirements'; update ```viewer/box_op.py``` to adapt 'vedo'.
 ## Prepare data 
 * Kitti detection dataset
 ```
@@ -58,14 +60,14 @@ The overall framework of design is shown below:
 
 Please refer to the  [OpenPCDet](https://github.com/open-mmlab/OpenPCDet)
 for Waymo dataset organization.
-## Requirements
+## Requirements (Updated 2021.11.2)
 ```
 python3
-numpy
-vedo
-vtk
-opencv
-matplotlib
+numpy==1.21.3
+vedo==2021.0.6
+vtk==9.0.3
+opencv==4.5.4.58
+matplotlib==3.4.3
 ```
 ## Usage
 #### 1. Set boxes type & viewer background color
