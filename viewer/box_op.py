@@ -189,7 +189,7 @@ def get_line_boxes(boxes,
 
         corner_spheres = Spheres(corner_points[:,0:3], c= corner_colors, r=corner_spheres_radius,res = 12,alpha=corner_spheres_alpha)
 
-        arraws = Arrows(arraw_points1[:,0:3],arraw_points2[:,0:3],c = arraw_colors,scale=heading_scale)
+        arraws = Arrows(arraw_points1[:,0:3],arraw_points2[:,0:3],c = arraw_colors,s=heading_scale)
         lines_actors.append(lines)
         sphere_actors.append(corner_spheres)
         arraw_actors.append(arraws)
