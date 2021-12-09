@@ -163,7 +163,7 @@ not close until you press the "Enter" key.
 Please zoom out the 3D scene by scrolling the middle mouse button backward, and then you can see the point cloud in this window.
 You can change the viewing angle by dragging the mouse within the visualization window.
 
-To show multiple frames, you can use the for loop, and press the "Enter" key to view a sequence data.
+To show multiple frames, you can use the for loop. While the code is running, please first click on the 3D window and then press the "Enter" key to view a sequence data.
 ```
 for i in range(len(dataset)):
     V2C, P2, image, boxes = dataset[i]
