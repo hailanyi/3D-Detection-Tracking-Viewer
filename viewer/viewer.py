@@ -393,7 +393,7 @@ class Viewer:
         :return:
         """
 
-        self.vi.show(self.actors+self.actors_without_del,resetcam=False)
+        self.vi.show(self.actors+self.actors_without_del,resetcam=False, camera={'pos': (-10, 0, 5), 'focalPoint': (5, 0, 2), 'viewup': (0, 0, 1)})
         self.vi.clear()
         self.actors.clear()
         self.points_info.clear()
