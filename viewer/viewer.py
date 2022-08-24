@@ -433,8 +433,15 @@ class Viewer:
                     pts_3d_cam = get_box_points(box)
                     pts_3d_cam = velo_to_cam(pts_3d_cam[:,0:3],self.cam_extrinsic_mat)
 
-                    img_pts = np.matmul(pts_3d_cam, self.cam_intrinsic_mat.T)  # (N, 3)
+                    all_img_pts = np.matmul(pts_3d_cam, self.cam_intrinsic_mat.T)  # (N, 3)
+                    
+                    #filter out targets with z less than 0
+                    show_index = np.where(all_img_pts[:, 2] > 0)[0]
+                    img_pts = img_pts[show_index]
+                    
                     x, y = img_pts[:, 0] / img_pts[:, 2], img_pts[:, 1] / img_pts[:, 2]
+                    if len(x) <= 0:
+                            continue
 
                     x = np.clip(x, 2, W-2)
                     y = np.clip(y, 2, H-2)
@@ -477,7 +484,12 @@ class Viewer:
 
             pts_3d_cam = velo_to_cam(points[:, 0:3], self.cam_extrinsic_mat)
 
-            img_pts = np.matmul(pts_3d_cam, self.cam_intrinsic_mat.T)  # (N, 3)
+            all_img_pts = np.matmul(pts_3d_cam, self.cam_intrinsic_mat.T)  # (N, 3)
+            
+            #filter out targets with z less than 0
+            show_index = np.where(all_img_pts[:, 2] > 0)[0]
+            img_pts = img_pts[show_index]
+            
             x, y = img_pts[:, 0] / img_pts[:, 2], img_pts[:, 1] / img_pts[:, 2]
 
             x = np.clip(x, 2, W - 2)
