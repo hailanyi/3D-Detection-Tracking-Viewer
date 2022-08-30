@@ -437,7 +437,7 @@ class Viewer:
                     
                     #filter out targets with z less than 0
                     show_index = np.where(all_img_pts[:, 2] > 0)[0]
-                    img_pts = img_pts[show_index]
+                    img_pts = all_img_pts[show_index]
                     
                     x, y = img_pts[:, 0] / img_pts[:, 2], img_pts[:, 1] / img_pts[:, 2]
                     if len(x) <= 0:
@@ -488,7 +488,7 @@ class Viewer:
             
             #filter out targets with z less than 0
             show_index = np.where(all_img_pts[:, 2] > 0)[0]
-            img_pts = img_pts[show_index]
+            img_pts = all_img_pts[show_index]
             
             x, y = img_pts[:, 0] / img_pts[:, 2], img_pts[:, 1] / img_pts[:, 2]
 
