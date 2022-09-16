@@ -82,7 +82,7 @@ vi = Viewer(box_type="Kitti",bg = (255,255,255))
 ```
 #### 2. Set objects color map
 You can set the objects color map for view tracking results, same as
- [matplotlab.pypot](https://matplotlib.org/stable/tutorials/colors/colormaps.html) color map.
+ [matplotlib.pyplot](https://matplotlib.org/stable/tutorials/colors/colormaps.html) color map.
 The common used color maps are "rainbow", "viridis","brg","gnuplot","hsv" and etc.
 ```
 vi.set_ob_color_map('rainbow')
