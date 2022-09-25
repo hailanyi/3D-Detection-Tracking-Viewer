@@ -26,7 +26,7 @@ class Viewer:
         self.boxes_info = [] # (boxes:array(N,7), ids:array(N,), colors:array(N,3) or str, box_info:list(N,))
         self.points_info = [] # (boxes:array(N,3), colors:array(N,3) or str)
         self.image = None
-
+        self.first_show = True
 
 
     def set_lights(self):
@@ -393,7 +393,12 @@ class Viewer:
         :return:
         """
 
-        self.vi.show(self.actors+self.actors_without_del,resetcam=False, camera={'pos': (-10, 0, 5), 'focalPoint': (5, 0, 2), 'viewup': (0, 0, 1)})
+        if self.first_show:
+            self.vi.show(self.actors+self.actors_without_del, resetcam=False,  camera={'pos': (-10, 0, 5), 'focalPoint': (5, 0, 2), 'viewup': (0, 0, 1)})#
+            self.first_show = False
+        else:
+            self.vi.show(self.actors + self.actors_without_del, resetcam=False)
+            
         self.vi.clear()
         self.actors.clear()
         self.points_info.clear()
