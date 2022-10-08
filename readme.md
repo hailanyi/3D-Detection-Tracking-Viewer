@@ -14,7 +14,7 @@ The overall framework of design is shown below:
 ![](./doc/framework.jpg)
 ## Change log
 * (2021.11.2) updated 'Requirements'; updated ```viewer/box_op.py``` to adapt 'vedo'.
-* (2022.10.8) updated a [usage example](#usage), fixed the [re-setting the coordinate system problem](https://github.com/hailanyi/3D-Detection-Tracking-Viewer/issues/12).
+* (2022.10.8) updated an [usage example](#usage), fixed the [re-setting the coordinate system problem](https://github.com/hailanyi/3D-Detection-Tracking-Viewer/issues/12).
 ## Prepare data 
 * Kitti detection dataset
 ```
