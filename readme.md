@@ -13,7 +13,8 @@ This code includes two parts, one for data loading, other one for visualization 
 The overall framework of design is shown below:
 ![](./doc/framework.jpg)
 ## Change log
-* (2021.11.2) update 'Requirements'; update ```viewer/box_op.py``` to adapt 'vedo'.
+* (2021.11.2) updated 'Requirements'; updated ```viewer/box_op.py``` to adapt 'vedo'.
+* (2022.10.8) updated a usage example, fixed the [re-setting the coordinate system problem](https://github.com/hailanyi/3D-Detection-Tracking-Viewer/issues/12).
 ## Prepare data 
 * Kitti detection dataset
 ```
@@ -71,7 +72,26 @@ opencv==4.5.4.58
 matplotlib==3.4.3
 ```
 ## Usage
-#### 1. Set boxes type & viewer background color
+#### 1. A test & usage example
+```
+from viewer.viewer import Viewer
+import numpy as np
+
+vi = Viewer() # set box_type='OpenPCDet' if you use OpenPCDet boxes
+len_dataset = 1000
+
+for i in range(len_dataset):
+    pseudo_boxes = np.array([[1+i*0.01, 1, 1, 1, 1, 1, 0]]) # your boxes
+    ids = np.array([i]) # your boxes ids (optional)
+
+    pseudo_points = np.random.randn(100, 3) # your points
+
+    vi.add_points(pseudo_points, radius=4)
+    vi.add_3D_boxes(pseudo_boxes, ids=ids)
+    vi.show_3D() # press the Enter key to view
+```
+
+#### 2. Set boxes type & viewer background color
 
 Currently this code supports Kitti (h,w,l,x,y,z,yaw) and Waymo OpenPCDet (x,y,z,l,w,h,yaw) box type.
 You can set the box type and background color when initializing a viewer as 
@@ -80,14 +100,14 @@ from viewer.viewer import Viewer
 
 vi = Viewer(box_type="Kitti",bg = (255,255,255))
 ```
-#### 2. Set objects color map
+#### 3. Set objects color map
 You can set the objects color map for view tracking results, same as
  [matplotlib.pyplot](https://matplotlib.org/stable/tutorials/colors/colormaps.html) color map.
 The common used color maps are "rainbow", "viridis","brg","gnuplot","hsv" and etc.
 ```
 vi.set_ob_color_map('rainbow')
 ```
-#### 3. Add colorized point clouds to 3D scene
+#### 4. Add colorized point clouds to 3D scene
 The viewer receives a set of points, it must be a array with shape (N,3).
 If you want to view the scatter filed, you should set the 'scatter_filed' with a shape (N,), and 
 set the 'color_map_name' to specify the colors.
@@ -105,7 +125,7 @@ vi.add_points(points[:,0:3],
 ```
 ![](./doc/points.png)
 
-#### 4. Add boxes or cars to 3D scene
+#### 5. Add boxes or cars to 3D scene
 The viewer receives a set of boxes, it must be a array with shape (N,7). You can set the boxes to meshes or lines only,
 you can also set the line width, conner points. Besides, you can provide a set of IDs(int) to colorize the boxes, and 
 put a set of additional infos to caption the boxes. Note that, the color will set to the color of "color" arg if the
@@ -150,7 +170,7 @@ vi.add_3D_cars(boxes=boxes[:,0:7],
 ```
 ![](./doc/cars.png)
 
-#### 5. View boxes or points on image
+#### 6. View boxes or points on image
 To view the 3D box and points on image, firstly should set the camera intrinsic, extrinsic mat, and put a image.
 Besides, when adding the boxes and points, the 'add_to_2D_scene' should be set to True.
 ```
@@ -158,7 +178,7 @@ vi.add_image(image)
 vi.set_extrinsic_mat(V2C)
 vi.set_intrinsic_mat(P2)
 ```
-#### 6. Show 2D and 3D results
+#### 7. Show 2D and 3D results
 To show a single frame, you can directly run ```vi.show_2D()```, ``` vi.show_3D()```. The visualization window will
 not close until you press the "Enter" key. 
 You can change the viewing angle by dragging the mouse within the visualization window.
