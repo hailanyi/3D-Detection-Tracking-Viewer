@@ -74,6 +74,7 @@ matplotlib==3.4.3
 ## Usage
 ### A test & usage example
 <img src="doc/example.gif" align="right" width="40%">
+
 ```
 from viewer.viewer import Viewer
 import numpy as np
