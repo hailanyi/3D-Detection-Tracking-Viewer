@@ -90,7 +90,7 @@ for i in range(len_dataset):
     vi.add_3D_boxes(pseudo_boxes, ids=ids)
     vi.show_3D() # press the Enter key to view
 ```
-![](./doc/example.gif)
+<img src="doc/example.gif" align="left" width="40%">
 
 ### Detailed usage
 #### 1. Set boxes type & viewer background color
