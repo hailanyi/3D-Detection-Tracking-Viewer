@@ -73,6 +73,7 @@ matplotlib==3.4.3
 ```
 ## Usage
 ### A test & usage example
+<img src="doc/example.gif" align="right" width="40%">
 ```
 from viewer.viewer import Viewer
 import numpy as np
@@ -90,7 +91,6 @@ for i in range(len_dataset):
     vi.add_3D_boxes(pseudo_boxes, ids=ids)
     vi.show_3D() # press the Enter key to view
 ```
-<img src="doc/example.gif" align="left" width="40%">
 
 ### Detailed usage
 #### 1. Set boxes type & viewer background color
