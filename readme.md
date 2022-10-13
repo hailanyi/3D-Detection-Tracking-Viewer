@@ -73,7 +73,7 @@ matplotlib==3.4.3
 ```
 ## Usage
 ### A test & usage example
-<img src="doc/example.gif" align="right" width="40%">
+<img src="doc/exa.gif" align="right" width="40%">
 
 ```
 from viewer.viewer import Viewer
@@ -90,6 +90,7 @@ for i in range(len_dataset):
 
     vi.add_points(pseudo_points, radius=4, scatter_filed=pseudo_points[:, 0])
     vi.add_3D_boxes(pseudo_boxes, ids=ids,caption_size=(0.09,0.09))
+    vi.add_spheres(pseudo_boxes[:, 0:3],radius=0.03,res=10,color='red',del_after_show=False, alpha=1) # Draw motion track
     vi.show_3D() # press the Enter key to view
 ```
 
