@@ -152,7 +152,7 @@ class Viewer:
             self.actors.append(Spheres(points,r=radius,res=res,c=colors,alpha=alpha))
 
         else:
-            self.actors_without_del.append(Spheres(Points,r=radius,res=res,c=colors,alpha=alpha))
+            self.actors_without_del.append(Spheres(points,r=radius,res=res,c=colors,alpha=alpha))
 
     def add_3D_boxes(self,boxes=None,
                      ids=None,
