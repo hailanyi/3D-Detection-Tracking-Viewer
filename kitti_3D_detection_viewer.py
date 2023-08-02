@@ -23,7 +23,7 @@ def kitti_viewer():
         vi.add_image(image)
         vi.set_extrinsic_mat(V2C)
         vi.set_intrinsic_mat(P2)
-        vi.show_2D(show_box_heading=False)
+        vi.show_2D()
         vi.show_3D()
 
 
