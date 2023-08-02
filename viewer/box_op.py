@@ -205,7 +205,7 @@ def get_line_boxes(boxes,
 
     return return_list
 
-def get_box_points(points, pose=None):
+def get_box_points(points, pose=None,show_box_heading=True):
     """
     box to points
     :param points: (7,),box
@@ -323,7 +323,10 @@ def get_box_points(points, pose=None):
     l4[:, 2] = h / 2
     l4[:, 3] = i
 
-    point_mat=np.mat(np.concatenate((z1,z2,z3,z4,w1,w2,w3,w4,l1,l2,l3,l4,d1,d2,d3,d4)))#
+    if show_box_heading:
+        point_mat = np.mat(np.concatenate((z1, z2, z3, z4, w1, w2, w3, w4, l1, l2, l3, l4, d1, d2, d3, d4)))
+    else:
+        point_mat = np.mat(np.concatenate((z1, z2, z3, z4, w1, w2, w3, w4, l1, l2, l3, l4)))
 
     angle=point[6]-PI/2
 

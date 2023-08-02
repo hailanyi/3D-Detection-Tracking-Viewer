@@ -404,7 +404,7 @@ class Viewer:
         self.points_info.clear()
         self.boxes_info.clear()
 
-    def show_2D(self,box_color = (255,0,0),show_box_info=False,show_ids=True,points_colors=(0,0,255)):
+    def show_2D(self,box_color = (255,0,0),show_box_info=False,show_ids=True,points_colors=(0,0,255), show_box_heading=True):
         """
         show object on image
         :param box_color: (list or tuple(3,)), default color
@@ -435,7 +435,7 @@ class Viewer:
                     else:
                         color = box_color
 
-                    pts_3d_cam = get_box_points(box)
+                    pts_3d_cam = get_box_points(box,show_box_heading=show_box_heading)
                     pts_3d_cam = velo_to_cam(pts_3d_cam[:,0:3],self.cam_extrinsic_mat)
 
                     all_img_pts = np.matmul(pts_3d_cam, self.cam_intrinsic_mat.T)  # (N, 3)

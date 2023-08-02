@@ -3,8 +3,8 @@ import numpy as np
 from dataset.kitti_dataset import KittiDetectionDataset
 
 def kitti_viewer():
-    root="H:/data/object detection/kitti/training"
-    label_path = "H:/data/object detection/kitti/training/label_2"
+    root=r"L:\data\kitti\detection\kitti\training"
+    label_path = r"L:\data\kitti\detection\kitti\training\label_2"
     dataset = KittiDetectionDataset(root,label_path)
 
     vi = Viewer(box_type="Kitti")
@@ -23,7 +23,7 @@ def kitti_viewer():
         vi.add_image(image)
         vi.set_extrinsic_mat(V2C)
         vi.set_intrinsic_mat(P2)
-        vi.show_2D()
+        vi.show_2D(show_box_heading=False)
         vi.show_3D()
 
 
