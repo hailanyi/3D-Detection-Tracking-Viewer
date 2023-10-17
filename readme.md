@@ -91,7 +91,7 @@ for i in range(len_dataset):
     vi.add_points(pseudo_points, radius=4, scatter_filed=pseudo_points[:, 0])
     vi.add_3D_boxes(pseudo_boxes, ids=ids,caption_size=(0.09,0.09))
     vi.add_spheres(pseudo_boxes[:, 0:3],radius=0.03,res=10,color='red',del_after_show=False, alpha=1) # Draw motion track
-    vi.show_3D() # press the Q or Enter key to view
+    vi.show_3D() # press the Q or Enter or ESC key to view
 ```
 
 ### Detailed usage
@@ -184,10 +184,10 @@ vi.set_intrinsic_mat(P2)
 ```
 #### 6. Show 2D and 3D results
 To show a single frame, you can directly run ```vi.show_2D()```, ``` vi.show_3D()```. The visualization window will
-not close until you press the "Q" key or "Enter" key. 
+not close until you press the "Q" key or "Enter" or "ESC" key. 
 You can change the viewing angle by dragging the mouse within the visualization window.
 
-To show multiple frames, you can use the for loop. While the code is running, please first click on the 3D window and then press the "Q" key or "Enter" key to view a sequence data.
+To show multiple frames, you can use the for loop. While the code is running, please first click on the 3D window and then press the "Q" key or "Enter" or "ESC" key to view a sequence data.
 ```
 for i in range(len(dataset)):
     V2C, P2, image, boxes = dataset[i]
