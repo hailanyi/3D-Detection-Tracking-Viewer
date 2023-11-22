@@ -21,7 +21,7 @@ def generate_objects_color_map(color_map_name='rainbow'):
     cmp = plt.get_cmap(color_map_name)
     color_map = cmp(color_map)
     color_map = color_map[:, 0:3] * 255
-    color_map = color_map.astype(np.int).tolist()
+    color_map = color_map.astype(int).tolist()
     return color_map
 
 def generate_objects_colors(object_ids,color_map_list):
