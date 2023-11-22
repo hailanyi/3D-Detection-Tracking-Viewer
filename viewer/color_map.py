@@ -64,7 +64,7 @@ def generate_scatter_colors(scatters,color_map_name='rainbow'):
         new_colors = new_colors[:, 0:3] * 255
         alpha = np.ones(shape=(len(new_colors), 1)) * 255
         new_colors = np.concatenate([new_colors, alpha], -1)
-    return new_colors.astype(np.int)
+    return new_colors.astype(int)
 
 
 if __name__ == '__main__':
