@@ -66,18 +66,16 @@ class KittiTrackingDataset:
         image_path = os.path.join(self.image_path, name+'.png')
 
 
-
         points = read_velodyne(velo_path,self.P2,self.V2C)
         image = read_image(image_path)
 
         if item in self.labels.keys():
             labels = self.labels[item]
             labels = np.array(labels)
-            labels[:,3:6] = cam_to_velo(labels[:,3:6],self.V2C)[:,:3]
+            # labels[:,3:6] = cam_to_velo(labels[:,3:6],self.V2C)[:,:3]
             label_names = self.label_names[item]
             label_names = np.array(label_names)
         else:
             labels = None
             label_names = None
-
         return self.P2,self.V2C,points,image,labels,label_names

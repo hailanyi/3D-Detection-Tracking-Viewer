@@ -21,11 +21,13 @@ def convert_box_type(boxes,input_box_type = 'Kitti'):
         new_boxes = np.zeros(shape=boxes.shape)
         new_boxes[:,:]=boxes[:,:]
         new_boxes[:,0:3] = boxes[:,3:6]
-        new_boxes[:, 3] = boxes[:, 2]
+        new_boxes[:, 3] = boxes[:, 0]
         new_boxes[:, 4] = boxes[:, 1]
-        new_boxes[:, 5] = boxes[:, 0]
-        new_boxes[:, 6] = (np.pi - boxes[:, 6]) + np.pi / 2
-        new_boxes[:, 2] += boxes[:, 0] / 2
+        new_boxes[:, 5] = boxes[:, 2]
+        new_boxes[:, 6]=boxes[:, 6]
+        # new_boxes[:, 6] = (np.pi - boxes[:, 6]) + np.pi / 2
+        # new_boxes[:, 2] += boxes[:, 0] / 2
+        
         return new_boxes
 
 def get_mesh_boxes(boxes,colors="red",

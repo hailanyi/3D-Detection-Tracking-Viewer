@@ -199,6 +199,7 @@ class Viewer:
         if boxes is None:
             return
         boxes= convert_box_type(boxes,self.box_type)
+        
         if boxes is None:
             return
 
