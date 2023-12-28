@@ -29,7 +29,8 @@ class KittiDetectionDataset:
 
         P2,V2C = read_calib(calib_path)
         points = read_velodyne(velo_path,P2,V2C)
-        image = read_image(image_path)
+        image = read_image(image_path)    
+            
         labels,label_names = read_detection_label(label_path)
         labels[:,3:6] = cam_to_velo(labels[:,3:6],V2C)[:,:3]
 
@@ -64,11 +65,11 @@ class KittiTrackingDataset:
 
         velo_path = os.path.join(self.velo_path,name+'.bin')
         image_path = os.path.join(self.image_path, name+'.png')
-
-
         points = read_velodyne(velo_path,self.P2,self.V2C)
-        image = read_image(image_path)
-
+        try:
+            image = read_image(image_path)
+        except:
+            image = None
         if item in self.labels.keys():
             labels = self.labels[item]
             labels = np.array(labels)
