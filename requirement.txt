@@ -1,0 +1,6 @@
+numpy==1.21.3
+vedo==2021.0.6
+vtk==9.0.3
+matplotlib==3.4.3
+opencv-python==4.5.4.58
+

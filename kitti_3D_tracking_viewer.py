@@ -3,8 +3,8 @@ import numpy as np
 from dataset.kitti_dataset import KittiTrackingDataset
 
 def kitti_viewer():
-    root="H:/data/tracking/training"
-    label_path = r"H:/data/tracking/training/label_02/0001.txt"
+    root="/home/philly12399/nas/homes/arthur_data/KITTI_tracking/training/"
+    label_path = r"/home/philly12399/nas/homes/arthur_data/KITTI_tracking/training/label_02/0001.txt"
     dataset = KittiTrackingDataset(root,seq_id=1,label_path=label_path)
 
     vi = Viewer(box_type="Kitti")
@@ -25,7 +25,7 @@ def kitti_viewer():
         vi.set_extrinsic_mat(V2C)
         vi.set_intrinsic_mat(P2)
 
-        vi.show_2D()
+        # vi.show_2D()
 
         vi.show_3D()
 
